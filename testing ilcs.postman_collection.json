@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "78d41027-1873-450c-8915-c1f70e4d548c",
+		"name": "testing ilcs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/simpan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "  \r\n  [{\"payload\":\r\n        {\r\n        \r\n            \"Npwp\": \"101029331\",\r\n            \"Nama\": \"PT TESTING 1\",\r\n            \"Transaksi\": \"Expor\",\r\n            \"NegaraTujuan\":\"INDIA\",\r\n            \"PelabuhanTujuan\":\"Nanded\",\r\n            \"Barang\":{\r\n                \"HSCODE\":\"22030091\",\r\n                \"JUMLAH\":\"5000\",\r\n                \"HARGA\":\"100000\",\r\n                \"PPNBK\":\"1000\",\r\n                \"BK\":\"10000\",\r\n                \"TOTALHARGA\":\"111000\"\r\n            }\r\n        }\r\n  }\r\n]\r\n  \r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/simpan",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"simpan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/barang?hs_code=22030091",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/barang?hs_code=22030091",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"barang"
+					],
+					"query": [
+						{
+							"key": "hs_code",
+							"value": "22030091"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/tarif?hs_code=22030091",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/tarif?hs_code=22030091",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"tarif"
+					],
+					"query": [
+						{
+							"key": "hs_code",
+							"value": "22030091"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=IN",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=IN",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"pelabuhan"
+					],
+					"query": [
+						{
+							"key": "kd_negara",
+							"value": "IN"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/negara?ur_negara=IND",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/negara?ur_negara=IND",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"negara"
+					],
+					"query": [
+						{
+							"key": "ur_negara",
+							"value": "IND"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=ID",
+					"protocol": "https",
+					"host": [
+						"insw-dev",
+						"ilcs",
+						"co",
+						"id"
+					],
+					"path": [
+						"n",
+						"pelabuhan"
+					],
+					"query": [
+						{
+							"key": "kd_negara",
+							"value": "ID"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
