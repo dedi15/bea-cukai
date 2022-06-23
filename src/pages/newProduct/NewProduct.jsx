@@ -18,7 +18,9 @@ export default function NewProduct() {
   const [harga, setHargaBarang] = useState('');
   const [tarif, setTarif] = useState('');
   const [tarifppn, setTarifPpn] = useState('');
-  const [tarifAll, setTarifAll] = useState(Object)
+  const [tarifAll, setTarifAll] = useState(Object);
+  const [totalhargaBk, setTotalHargaBk] = useState('');
+  const [totalhargaBm, setTotalHargaBm] = useState('');
   const [totalharga, setTotalHarga] = useState('');
   const [ppnbm, setPpnBm] = useState('');
   const [bm, setBm] = useState(''); 
@@ -38,6 +40,25 @@ export default function NewProduct() {
     {value: '22030091', label: '22030091'},
     {value: '22030092', label: '22030092'}
   ]
+
+  const doCalculateTotalHarga = async function (vjumlah, vharga) {
+    let djumlah = Number(vjumlah)
+    let dharga = Number(vharga)
+    setJumlahBarang(djumlah)
+    setHargaBarang(dharga)
+    let dtotal = 0
+    let dTarif = 0
+    let dTarifPpn = 0
+    if (transaksi === 'Ekspor') {
+      dTarif = Number(bk)
+      dTarifPpn = Number(ppnbk)
+    }else{
+      dTarif = Number(bm)
+      dTarifPpn = Number(ppnbm)
+    }
+    dtotal = (dharga + (dTarif * dharga/100) + ( dTarifPpn * dharga/100)) * djumlah;
+    setTotalHarga(dtotal)
+  }
 
   const doGetTarif = async function () {
     let url = 'https://insw-dev.ilcs.co.id/n/tarif?hs_code=22030091'
@@ -64,11 +85,11 @@ export default function NewProduct() {
     if(transaksi == 'Ekspor'){
       setTarif(dataTarif.bk)
       setTarifPpn(dataTarif.ppnbk)
-      console.log('expor', dataTarif)
+      console.log('Ekspor', dataTarif)
     } else {
       setTarif(dataTarif.bm)
       setTarifPpn(dataTarif.ppnbm)
-      console.log('impor', dataTarif)
+      console.log('Impor', dataTarif)
     }
   }
 
@@ -218,7 +239,7 @@ export default function NewProduct() {
             onChange={(val) => doGetHsCode(val.value)}
             defaultValue={hscode}/>
           <label>JUMLAH BARANG</label>
-          <input type="text" value={jumlah} onChange={(e)=>setJumlahBarang(e.target.value)} className="form-control" placeholder="" />
+          <input type="text" value={jumlah} onChange={(e)=>doCalculateTotalHarga(e.target.value, harga)} className="form-control" placeholder="" />
           <label>TARIF</label>
           <input type="text" value={tarif} onChange={(e)=>setTarif(e.target.value)} className="form-control" placeholder="" />
           <label>TOTAL HARGA</label>
@@ -242,7 +263,7 @@ export default function NewProduct() {
           <input type="text" placeholder="" disabled="true" value={uraianhscode}/>
           <br />
           <label>HARGA BARANG</label>
-          <input type="text" value={harga} onChange={(e)=>setHargaBarang(e.target.value)} className="form-control" placeholder="" />
+          <input type="text" value={harga} onChange={(e)=>doCalculateTotalHarga(jumlah,e.target.value)} className="form-control" placeholder="" />
           <label>TARIF PPN</label>
           <input type="text" value={tarifppn} onChange={(e)=>setTarifPpn(e.target.value)} className="form-control" placeholder="" />
         </Grid>
