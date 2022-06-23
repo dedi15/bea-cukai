@@ -1,7 +1,7 @@
 import "./newProduct.css";
 import { Grid } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
-import axios from '../../config/axios';
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import Select from 'react-select';
 
@@ -61,19 +61,24 @@ export default function NewProduct() {
   });
 
   const doSave = async function () {
-    let item = {npwp, nama, transaksi, negaratujuan, pelabuhantujuan, hscode, jumlah, harga, ppnbk, bk, totalharga};
-    let result = await fetch ("https://insw-dev.ilcs.co.id/n/simpan",{
-      method: "POST",
-      body: JSON.stringify(item),
-      headers: 
-      {
-          "content-type": "application/json",
-          Accept : "application/json",
-
-      }
-  })
-  result = await result.json();
-  console.warn("result", result);
+    try {
+      let item = JSON.stringify({npwp, nama, transaksi, negaratujuan, pelabuhantujuan, hscode, jumlah, harga, ppnbk, bk, totalharga});
+      console.log(item);
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Accept", "application/json");
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: item,
+        redirect: 'follow'
+      };
+      let result = await axios.post("https://insw-dev.ilcs.co.id/n/simpan", item)
+      console.warn("result", result);
+      
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
