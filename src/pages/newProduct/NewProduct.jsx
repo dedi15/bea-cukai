@@ -21,6 +21,9 @@ export default function NewProduct() {
   const [totalharga, setTotalHarga] = useState('');
   const [ppnbk, setPpnBk] = useState('');
   const [bk, setBk] = useState(''); 
+  const [optnegaratujuan, setOptNegaraTujuan] = useState([]);
+  const [optpelabuhantujuan, setOptPelabuhanTujuan] = useState([]);
+
 
   const options = [
     {value: 'Ekspor', label: 'Ekspor'},
@@ -29,28 +32,72 @@ export default function NewProduct() {
 
   const options2 = [
     {value: '-', label: '-'},
-    {value: '101029331', label: '101029331'}
+    {value: '22030091', label: '22030091'},
+    {value: '22030092', label: '22030092'}
   ]
 
 
-  const doGetHsCode = async function () {
-    let url = 'https://insw-dev.ilcs.co.id/n/barang?hs_code=22030091'
+  const doGetHsCode = async function (code) {
+    console.log(code)
+    let url = 'https://insw-dev.ilcs.co.id/n/barang?hs_code='+code
     let res = await axios.get(url)
+    let data = res.data.data[0]
+    console.log(data)
+    setUraianHsCode(data.uraian_id)
+    setSubHeaderHsCode(data.sub_header)
+  }
+
+  const setTrans = (trans) => {
+    setTransaksi(trans)
+    if(trans == 'Ekspor'){
+      setNegaraTujuan('INDONESIA')
+      doGetPelTujuanIm()
+    } else {
+      setNegaraTujuan('INDIA')
+      doGetPelTujuanEx()
+    }
   }
 
   const doGetNegara = async function () {
     let url = 'https://insw-dev.ilcs.co.id/n/negara?ur_negara=IND'
     let res = await axios.get(url)
+    let data = res.data.data
+    let opt = []
+    data.map((item) => {
+      opt.push({
+        value: item.kd_negara,
+        label: item.ur_negara
+      })
+    })
+    setOptNegaraTujuan(opt)
   }
 
   const doGetPelTujuanEx = async function () {
     let url = 'https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=IN'
     let res = await axios.get(url)
+    let data = res.data.data
+    let opt = []
+    data.map((item) => {
+      opt.push({
+        value: item.kd_pelabuhan,
+        label: item.ur_pelabuhan
+      })
+    })
+    setOptPelabuhanTujuan(opt)
   }
 
   const doGetPelTujuanIm = async function () {
     let url = 'https://insw-dev.ilcs.co.id/n/pelabuhan?kd_negara=ID'
     let res = await axios.get(url)
+    let data = res.data.data
+    let opt = []
+    data.map((item) => {
+      opt.push({
+        value: item.kd_pelabuhan,
+        label: item.ur_pelabuhan
+      })
+    })
+    setOptPelabuhanTujuan(opt)
   }
 
   const [info, setInfo] = useState({
@@ -62,7 +109,18 @@ export default function NewProduct() {
 
   const doSave = async function () {
     try {
-      let item = JSON.stringify({npwp, nama, transaksi, negaratujuan, pelabuhantujuan, hscode, jumlah, harga, ppnbk, bk, totalharga});
+      let item = JSON.stringify({
+        npwp,
+        nama,
+        transaksi,
+        negaratujuan,
+        pelabuhantujuan,
+        hscode,
+        jumlah,
+        harga,
+        ppnbk,
+        bk,
+        totalharga});
       console.log(item);
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -82,7 +140,7 @@ export default function NewProduct() {
   }
 
   useEffect(() => {
-    doGetHsCode()
+    // doGetHsCode()
     doGetNegara()
     doGetPelTujuanEx()
     doGetPelTujuanIm()
@@ -102,20 +160,27 @@ export default function NewProduct() {
             name="active" 
             id="active"
             placeholder="Select Transaksi"
-            options={options} >
-            onChange={(val) => setTransaksi(val.value)}
-          </Select>
+            options={options}
+            onChange={(val) => setTrans(val.value)}
+            defaultValue={transaksi}/>
           <label>NEGARA TUJUAN</label>
-          <input type="text" value={negaratujuan} onChange={(e)=>setNegaraTujuan(e.target.value)} className="form-control" placeholder="" />
+          <input type="text" value={negaratujuan} onChange={(e)=>setNegaraTujuan(e.target.value)} className="form-control" placeholder="" disabled />
           <label>PELABUHAN TUJUAN</label>
-          <input type="text" value={pelabuhantujuan} onChange={(e)=>setPelabuhanTujuan(e.target.value)} className="form-control" placeholder="" />
+          <Select
+            name="active" 
+            id="active"
+            placeholder="Select Pelabuhan Tujuan"
+            options={optpelabuhantujuan}
+            onChange={(val) => setPelabuhanTujuan(val.value)}
+            defaultValue={pelabuhantujuan}/>
           <label>HS CODE</label>
-          <Select name="active" 
+          <Select
+            name="active" 
             id="active"
             placeholder="Select Hs Code"
-            options={options2} >
-            onChange={(val) => setHsCode(val.value)}
-          </Select>
+            options={options2}
+            onChange={(val) => doGetHsCode(val.value)}
+            defaultValue={hscode}/>
           <label>JUMLAH BARANG</label>
           <input type="text" value={jumlah} onChange={(e)=>setJumlahBarang(e.target.value)} className="form-control" placeholder="" />
           <label>TARIF</label>
@@ -137,7 +202,7 @@ export default function NewProduct() {
           <br />
           <br />
           <label>URAIAN CODE</label>
-          <input type="text" placeholder="" disabled="true"/>
+          <input type="text" placeholder="" disabled="true" value={uraianhscode}/>
           <label>HARGA BARANG</label>
           <input type="text" value={harga} onChange={(e)=>setHargaBarang(e.target.value)} className="form-control" placeholder="" />
           <label>TARIF PPN</label>
@@ -156,7 +221,7 @@ export default function NewProduct() {
           <br />
           <br />
           <label>SUB HEADER HS CODE</label>
-          <input type="text" placeholder="" disabled="true"/>
+          <input type="text" placeholder="" disabled="true" value={subheaderhscode}/>
         </Grid>
         </Grid>
         <br />
