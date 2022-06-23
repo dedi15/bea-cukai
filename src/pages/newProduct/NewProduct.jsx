@@ -18,7 +18,10 @@ export default function NewProduct() {
   const [harga, setHargaBarang] = useState('');
   const [tarif, setTarif] = useState('');
   const [tarifppn, setTarifPpn] = useState('');
+  const [tarifAll, setTarifAll] = useState(Object)
   const [totalharga, setTotalHarga] = useState('');
+  const [ppnbm, setPpnBm] = useState('');
+  const [bm, setBm] = useState(''); 
   const [ppnbk, setPpnBk] = useState('');
   const [bk, setBk] = useState(''); 
   const [optnegaratujuan, setOptNegaraTujuan] = useState([]);
@@ -36,25 +39,57 @@ export default function NewProduct() {
     {value: '22030092', label: '22030092'}
   ]
 
+  const doGetTarif = async function () {
+    let url = 'https://insw-dev.ilcs.co.id/n/tarif?hs_code=22030091'
+    let res = await axios.get(url)
+    let data = res.data.data[0]
+    setBk(data.bk)
+    setPpnBk(data.ppnbk)
+    setBm(data.bm)
+    setPpnBm(data.ppnbm)
+  }
 
   const doGetHsCode = async function (code) {
-    console.log(code)
+    console.log(transaksi, code)
+    setHsCode(code)
     let url = 'https://insw-dev.ilcs.co.id/n/barang?hs_code='+code
     let res = await axios.get(url)
     let data = res.data.data[0]
-    console.log(data)
     setUraianHsCode(data.uraian_id)
     setSubHeaderHsCode(data.sub_header)
+    let urlTarif = 'https://insw-dev.ilcs.co.id/n/tarif?hs_code='+code
+    let resTarif = await axios.get(urlTarif)
+    let dataTarif = resTarif.data.data[0]
+    setTarifAll(dataTarif)
+    if(transaksi == 'Ekspor'){
+      setTarif(dataTarif.bk)
+      setTarifPpn(dataTarif.ppnbk)
+      console.log('expor', dataTarif)
+    } else {
+      setTarif(dataTarif.bm)
+      setTarifPpn(dataTarif.ppnbm)
+      console.log('impor', dataTarif)
+    }
   }
+
+
 
   const setTrans = (trans) => {
     setTransaksi(trans)
-    if(trans == 'Ekspor'){
+    if(trans == 'Impor'){
       setNegaraTujuan('INDONESIA')
       doGetPelTujuanIm()
+      if(tarifAll){
+        setTarif(tarifAll.bm)
+        setTarifPpn(tarifAll.ppnbm)
+      }
     } else {
       setNegaraTujuan('INDIA')
       doGetPelTujuanEx()
+      if(tarifAll){
+      setTarif(tarifAll.bk)
+      setTarifPpn(tarifAll.ppnbk)
+      }
     }
   }
 
@@ -144,6 +179,7 @@ export default function NewProduct() {
     doGetNegara()
     doGetPelTujuanEx()
     doGetPelTujuanIm()
+    doGetTarif()
   }, [])
 
   return (
@@ -184,7 +220,7 @@ export default function NewProduct() {
           <label>JUMLAH BARANG</label>
           <input type="text" value={jumlah} onChange={(e)=>setJumlahBarang(e.target.value)} className="form-control" placeholder="" />
           <label>TARIF</label>
-          <input type="text" value={bk} onChange={(e)=>setBk(e.target.value)} className="form-control" placeholder="" />
+          <input type="text" value={tarif} onChange={(e)=>setTarif(e.target.value)} className="form-control" placeholder="" />
           <label>TOTAL HARGA</label>
           <input type="text" value={totalharga} onChange={(e)=>setTotalHarga(e.target.value)} className="form-control" placeholder="" />
         </Grid>
@@ -201,14 +237,17 @@ export default function NewProduct() {
           <br />
           <br />
           <br />
+          <br />
           <label>URAIAN CODE</label>
           <input type="text" placeholder="" disabled="true" value={uraianhscode}/>
+          <br />
           <label>HARGA BARANG</label>
           <input type="text" value={harga} onChange={(e)=>setHargaBarang(e.target.value)} className="form-control" placeholder="" />
           <label>TARIF PPN</label>
-          <input type="text" value={ppnbk} onChange={(e)=>setPpnBk(e.target.value)} className="form-control" placeholder="" />
+          <input type="text" value={tarifppn} onChange={(e)=>setTarifPpn(e.target.value)} className="form-control" placeholder="" />
         </Grid>
         <Grid container item xs={4} direction="column" >
+          <br />
           <br />
           <br />
           <br />
@@ -225,7 +264,7 @@ export default function NewProduct() {
         </Grid>
         </Grid>
         <br />
-        <button variant="primary" onClick={doSave}>Save</button>
+        <button variant="primary" onClick={doSave}>Add</button>
     </div>
 
 
